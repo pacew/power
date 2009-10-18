@@ -49,7 +49,6 @@ while (1) {
     if ($row[$len-1] != "\n")
       break;
     echo ($row);
-    echo ("<br/>\n");
     $pos += strlen ($row);
   }
   flush ();
