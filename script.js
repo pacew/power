@@ -9,11 +9,9 @@ function dbg (str) {
 
 var req;
 var last_response_text_size;
+var req_time;
 
 function power_setup () {
-    if (window.req)
-	req.abort ();
-
     if (window.XMLHttpRequest) {
 	req = new window.XMLHttpRequest ();
     } else {
@@ -26,7 +24,10 @@ function power_setup () {
     req.onreadystatechange = req_callback;
 
     last_response_text_size = 0;
+    req_time = new Date ();
+
     req.send (null);
+
     
 }
 
@@ -60,8 +61,10 @@ function req_callback () {
 
 	canvas_update ();
 
-	if (last_response_text_size > 10000) {
+	if (new Date () - req_time > 60 * 1000) {
 	    last_response_text_size = 0;
+	    req.abort ();
+	    req = null;
 	    power_setup ();
 	}
     }
@@ -94,6 +97,8 @@ function canvas_update () {
 
     var end_x = width;
     var start_x = width - use_secs;
+
+    ctx.clearRect (0, 0, width, height);
 
     ctx.beginPath ();
 
