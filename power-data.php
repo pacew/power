@@ -27,7 +27,7 @@ while (1) {
     while ($pos > 0) {
       if ($data[$pos - 1] == "\n") {
 	$nlines++;
-	if ($nlines > 1000)
+	if ($nlines > 1001)
 	  break;
       }
       $pos--;
