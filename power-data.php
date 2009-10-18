@@ -27,7 +27,7 @@ while (1) {
     while ($pos > 0) {
       if ($data[$pos - 1] == "\n") {
 	$nlines++;
-	if ($nlines > 10)
+	if ($nlines > 1000)
 	  break;
       }
       $pos--;
@@ -49,7 +49,6 @@ while (1) {
     if ($row[$len-1] != "\n")
       break;
     echo ($row);
-    echo ("<br/>\n");
     $pos += strlen ($row);
   }
   flush ();
