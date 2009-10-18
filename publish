@@ -22,8 +22,11 @@ need_prompt=0
 
 combo=${host}-${db_mode}
 case $combo in
-p-dev | xps-dev | farana-dev)
+p-dev | xps-dev)
 	SITE_ROOT=/var/www/html/dev/${proj}-${uname}
+	;;
+farana-dev)
+	SITE_ROOT=/var/www/html/
 	;;
 *)
 	echo "can't handle ${combo}"
