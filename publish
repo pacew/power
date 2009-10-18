@@ -8,7 +8,7 @@ uname=`id -un`
 if [ "$db_mode" = "" ]
 then
     case $host in
-	p | xps | fs)
+	p | xps | fs | farana)
 	    db_mode=dev
 	    ;;
 	*)
@@ -22,7 +22,7 @@ need_prompt=0
 
 combo=${host}-${db_mode}
 case $combo in
-p-dev | xps-dev)
+p-dev | xps-dev | farana-dev)
 	SITE_ROOT=/var/www/html/dev/${proj}-${uname}
 	;;
 *)
