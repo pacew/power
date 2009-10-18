@@ -1,0 +1,57 @@
+#! /bin/sh
+
+proj=power
+db_mode=$1
+host=`hostname -s`
+uname=`id -un`
+
+if [ "$db_mode" = "" ]
+then
+    case $host in
+	p | xps | fs)
+	    db_mode=dev
+	    ;;
+	*)
+	    echo "uasge: publish mode"
+	    exit 1
+	    ;;
+    esac
+fi
+
+need_prompt=0
+
+combo=${host}-${db_mode}
+case $combo in
+p-dev | xps-dev)
+	SITE_ROOT=/var/www/html/dev/${proj}-${uname}
+	;;
+*)
+	echo "can't handle ${combo}"
+	exit 1
+	;;
+esac
+
+web_files=`make web_files`
+
+if [ $db_mode = dev ]
+then
+    d=`pwd`
+    for file in $web_files
+    do
+	ln -sf ${d}/$file ${SITE_ROOT}/${file}
+    done
+else
+    cp -p ${web_files} ${SITE_ROOT}/.
+    if [ $? != 0 ]
+    then
+	echo "error copying files"
+	exit 1
+    fi
+fi
+
+commit=`git rev-parse HEAD`
+rm -f ${SITE_ROOT}/commit
+echo $commit > ${SITE_ROOT}/commit
+
+echo "published in ${SITE_ROOT}"
+exit 0
