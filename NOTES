@@ -1,0 +1,31 @@
+GET /history/secondhistory.xml?INDEX=0&MTU=0&COUNT=7&u=4 HTTP/1.1
+Host: pwr
+
+
+GET /api/LiveData.xml HTTP/1.1
+Host: pwr
+User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.14) Gecko/2009090216 Ubuntu/9.04 (jaunty) Firefox/3.0.14
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-us,en;q=0.5
+Accept-Encoding: gzip,deflate
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Keep-Alive: 300
+Connection: keep-alive
+Content-Type: text/plain; charset=utf-8
+Referer: http://pwr/A7D871C8A551AB3066FF221D89495926.cache.html
+
+
+
+
+indexmaker --output=/var/www/mrtg/index.html /etc/mrtg/mrtg.cfg
+
+Then I run this command to set an environmental variable
+
+env LANG=C /usr/bin/mrtg /etc/mrtg/mrtg.cfg
+
+and open http://localhost/mrtg/index.html
+
+You should now see an output graph.
+
+crontab -e
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * env LANG=C /usr/bin/mrtg /etc/mrtg/mrtg.cfg --logging /var/log/mrtg.log
