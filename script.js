@@ -78,58 +78,132 @@ function canvas_init () {
 
 }
 
+var left_secs, right_secs;
+var canvas_width, canvas_height;
+
+var kw_min, kw_max;
+
+function secs_to_x (secs) {
+    var x = (secs - left_secs) / (right_secs - left_secs) * canvas_width;
+    x = Math.floor (x);
+    if (x < 0)
+	x = 0;
+    if (x > canvas_width)
+	x = canvas_width;
+    return (x);
+}
+
+function x_to_secs (x) {
+    var secs = (right_secs - left_secs) / canvas_width * x + left_secs;
+    secs = Math.floor (secs);
+    if (secs < 0)
+	secs = 0;
+    return (secs);
+}
+
+function kw_to_y (kw) {
+    var y = (kw - kw_min) / (kw_max - kw_min) * canvas_height;
+    y = Math.floor (y);
+    y = canvas_height - y;
+    if (y < 0)
+	y = 0;
+    if (y > canvas_height)
+	y = canvas_height;
+    return (y);
+}
+
 function canvas_update () {
-    var width = $(canvas).width ();
-    var height = $(canvas).height ();
+    canvas_width = $(canvas).width ();
+    canvas_height = $(canvas).height ();
 
-    var max_val = 4.0;
+    kw_min = 1;
+    kw_max = 2.5;
 
-    var use_secs = power_data_end - power_data_start - 1;
-    if (use_secs <= 2)
-	return;
+    ctx.clearRect (0, 0, canvas_width, canvas_height);
 
-    if (use_secs > width)
-	use_secs = width;
+    right_secs = power_data_end;
+    left_secs = right_secs - (canvas_width * 1);
 
-    var end_secs = power_data_end;
-    var start_secs = end_secs - use_secs;
-    var left_secs = end_secs - width;
-
-    var end_x = width;
-    var start_x = width - use_secs;
-
-    ctx.clearRect (0, 0, width, height);
-
+    ctx.strokeStyle = "#444444";
+    ctx.lineWidth = 1;
     ctx.beginPath ();
 
-    var need_moveto = 1;
-    var ret = "";
-    for (secs = start_secs; secs < end_secs; secs++) {
-	x = secs - left_secs;
+    x = canvas_width;
+    while (x >= 0) {
+	var secs = x_to_secs (x);
+	kw = power_data[secs];
+	if (kw) {
+	    ctx.moveTo (x, kw_to_y (kw));
+	    break;
+	}
+	x--;
+    }
+    
+    while (x >= 0) {
+	var secs = x_to_secs (x);
+	kw = power_data[secs];
+	if (kw) {
+	    y = kw_to_y (kw);
+	    ctx.lineTo (x, y);
+	}
 
-	val = power_data[secs];
-	ret = ret + val + "   ";
-	if (val) {
-	    y = height - val / max_val * height;
-	    y = y.toFixed (0);
-	    if (y < 0)
-		y = 0;
-	    if (y > height - 1)
-		y = height - 1;
-	    
-	    ret = ret + x+","+y+"  ";
+	x--;
+    }
+	
+    ctx.stroke ();
 
-	    if (need_moveto) {
-		need_moveto = 0;
-		ctx.moveTo (x, y);
-	    } else {
-		ctx.lineTo (x, y);
+    canvas_grid ();
+}
+
+function canvas_grid () {
+    var grid_spacing = 60;
+
+    ctx.lineWidth = .25;
+
+    secs = Math.floor (left_secs / grid_spacing) * grid_spacing;
+    while (secs < right_secs) {
+	x = secs_to_x (secs);
+
+	ctx.strokeStyle = "#cccccc";
+
+	if (x > 0) {
+	    var ampm = "";
+	    var hours = Math.floor (secs / 3600);
+	    var s1 = secs - hours * 3600;
+	    var minutes = Math.floor (s1 / 60);
+
+	    if (minutes % 5 == 0) {
+		ctx.strokeStyle = "#444444";
+		if (hours == 0)
+		    hours = 12;
+		if (hours >= 12) {
+		    ampm = "p";
+		    if (hours > 12)
+			hours -= 12;
+		}
+		
+		var t = hours + ":";
+		if (minutes < 10)
+		    t += "0";
+		t += minutes;
+		t += ampm;
+		
+		ctx.save ();
+		ctx.translate (x + 2, canvas_height - 20);
+		ctx.mozDrawText (t);
+		ctx.restore ();
 	    }
 	}
+
+	ctx.beginPath ();
+	ctx.moveTo (x, 0);
+	ctx.lineTo (x, canvas_height);
+	ctx.stroke ();
+
+
+	secs += grid_spacing;
     }
-
-
-    ctx.stroke ();
+    
 }
 
 
