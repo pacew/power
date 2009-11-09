@@ -1,4 +1,5 @@
 #include <opus/opus.h>
+#include <signal.h>
 
 void process (char *buf);
 
@@ -17,6 +18,13 @@ int seq;
 int udpsock;
 
 int background_flag;
+
+void
+intr (int sig)
+{
+  printf ("intr\n");
+  exit (1);
+}
 
 int
 main (int argc, char **argv)
@@ -68,7 +76,10 @@ main (int argc, char **argv)
 		exit (1);
 	}
 
+	signal (SIGALRM, intr);
+
 	while (1) {
+	  	alarm (30);
 		if ((sock = socket (AF_INET, SOCK_STREAM, 0)) < 0) {
 			fprintf (stderr, "can't create socket\n");
 			exit (1);
