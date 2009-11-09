@@ -123,10 +123,12 @@ function canvas_update () {
     while (x >= 0) {
 	var secs = x_to_secs (x);
 	kw = power_data[secs];
-	if (kw > kw_max)
-	    kw_max = kw;
-	if (kw < kw_min)
-	    kw_min = kw;
+	if (kw) {
+	    if (kw > kw_max)
+		kw_max = kw;
+	    if (kw < kw_min)
+		kw_min = kw;
+	}
 	x--;
     }
     
