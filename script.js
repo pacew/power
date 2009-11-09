@@ -107,8 +107,8 @@ function kw_to_y (kw) {
     y = canvas_height - y;
     if (y < 0)
 	y = 0;
-    if (y > canvas_height)
-	y = canvas_height;
+    if (y >= canvas_height)
+	y = canvas_height - 1;
     return (y);
 }
 
@@ -116,8 +116,22 @@ function canvas_update () {
     canvas_width = $(canvas).width ();
     canvas_height = $(canvas).height ();
 
-    kw_min = 1;
-    kw_max = 2.5;
+    kw_min = 1000;
+    kw_max = 0;
+
+    x = canvas_width;
+    while (x >= 0) {
+	var secs = x_to_secs (x);
+	kw = power_data[secs];
+	if (kw > kw_max)
+	    kw_max = kw;
+	if (kw < kw_min)
+	    kw_min = kw;
+	x--;
+    }
+    
+    kw_min = Math.floor (kw_min);
+    kw_max = Math.floor (kw_max + 1);
 
     ctx.clearRect (0, 0, canvas_width, canvas_height);
 
@@ -189,7 +203,7 @@ function canvas_grid () {
 		t += ampm;
 		
 		ctx.save ();
-		ctx.translate (x + 2, canvas_height - 20);
+		ctx.translate (x + 2, canvas_height - 30);
 		ctx.mozDrawText (t);
 		ctx.restore ();
 	    }
@@ -204,6 +218,34 @@ function canvas_grid () {
 	secs += grid_spacing;
     }
     
+    kw = kw_min;
+
+    incr = 1;
+    if (kw_max - kw_min <= 4)
+	incr = .5;
+
+    while (kw < kw_max) {
+	y = kw_to_y (kw);
+
+	ctx.beginPath ();
+	ctx.moveTo (0, y);
+	ctx.lineTo (canvas_width, y);
+	ctx.stroke ();
+
+	ctx.save ();
+	ctx.translate (5, y - 5);
+
+	text = kw;
+	if (kw == kw_min)
+	    text += " kw";
+
+	ctx.mozDrawText (text);
+	ctx.restore ();
+
+	kw += incr;
+    }
+
+
 }
 
 
