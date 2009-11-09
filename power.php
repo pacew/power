@@ -15,7 +15,7 @@ if ($width == 0 || $height == 0) {
 $body .= "<form action='power.php'>\n";
 $body .= sprintf ("width: <input type='text' name='width' value='%d' />\n",
 		  $width);
-$body .= sprintf ("width: <input type='text' name='height' value='%d' />\n",
+$body .= sprintf ("height: <input type='text' name='height' value='%d' />\n",
 		  $height);
 $body .= "<input type='submit' value='Set' />\n";
 $body .= "</form>\n";
