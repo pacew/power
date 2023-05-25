@@ -32,7 +32,7 @@ function pstart () {
 
 	$footer = "";
 
-	$tail .= "<script type='text/javascript' src='jquery-1.3.2.min.js'>"
+	$tail .= "<script type='text/javascript' src='jquery-3.7.0.min.js'>"
 		."</script>\n";
 	$tail .= "<script type='text/javascript' src='script.js'>"
 		."</script>\n";

@@ -1,7 +1,7 @@
 CFLAGS = -g -Wall
 LIBS = -lopus -lm
 
-WEB_FILES = power.php jquery-1.3.2.min.js common.php style.css script.js \
+WEB_FILES = power.php jquery-3.7.0.min.js common.php style.css script.js \
 	power-data.php
 
 all: getpowerd
